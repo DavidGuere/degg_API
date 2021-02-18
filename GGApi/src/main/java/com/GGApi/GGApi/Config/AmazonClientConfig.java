@@ -14,7 +14,7 @@ public class AmazonClientConfig {
     // Access to AWS management console
     @Bean
     public AmazonS3 s3Client(){
-        AWSCredentials awsCredentials = new BasicAWSCredentials("AKIAIS2CV7GK4LA4OIDQ", "JWcW5S9moGjTo0h7Gv+HYUb2rzoeoIM48Z4aLpvK");
+        AWSCredentials awsCredentials = new BasicAWSCredentials("", "");
 
         return AmazonS3ClientBuilder.standard().withRegion("eu-north-1").withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
     }
