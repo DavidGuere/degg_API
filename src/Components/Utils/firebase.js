@@ -8,13 +8,13 @@ Configuration file for Firebase. This is where this app is linked to the firebas
 */
 
 var firebaseConfig = {
-  apiKey: "AIzaSyAMbJ_l5K9aa7CnFyqbc2W4U2YZLL46W5o",
-  authDomain: "ggserver-e6c58.firebaseapp.com",
-  projectId: "ggserver-e6c58",
-  storageBucket: "ggserver-e6c58.appspot.com",
-  messagingSenderId: "830341747024",
-  appId: "1:830341747024:web:4bf0954d53e428cc40dc55",
-  measurementId: "G-JPBYY8W7HD",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTHDOMAN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MSSGSENDER,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 const fb = firebase.initializeApp(firebaseConfig);
