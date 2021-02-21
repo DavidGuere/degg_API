@@ -1,10 +1,10 @@
-// Credits: https://github.com/react-dropzone/react-dropzone
+// Dropzone basic code Credits: https://github.com/react-dropzone/react-dropzone
 
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 
-export default function DropzoneHook() {
+export default function DropzoneHook({ server }) {
   // Convert URI to BLOB. Credits: https://stackoverflow.com/questions/17328438/convert-data-uri-to-file
   function dataURLtoBlob(dataurl) {
     var arr = dataurl.split(","),
@@ -18,62 +18,65 @@ export default function DropzoneHook() {
     return new Blob([u8arr], { type: mime });
   }
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const image = acceptedFiles[0];
-    const formData = new FormData();
-    var orientation;
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const image = acceptedFiles[0];
+      const formData = new FormData();
+      var orientation;
 
-    // Check image orientation and resize image canvas
-    var img = new Image();
-    img.src = window.URL.createObjectURL(image);
-    const canvas = document.createElement("canvas");
+      // Check image orientation and resize image canvas
+      var img = new Image();
+      img.src = window.URL.createObjectURL(image);
+      const canvas = document.createElement("canvas");
 
-    img.onload = () => {
-      const width = img.width;
-      const height = img.height;
+      img.onload = () => {
+        const width = img.width;
+        const height = img.height;
 
-      if (width > height) {
-        orientation = "l";
-        const maxWidth = 1400;
-        const scale = maxWidth / width;
+        if (width > height) {
+          orientation = "l";
+          const maxWidth = 1400;
+          const scale = maxWidth / width;
 
-        canvas.width = maxWidth;
-        canvas.height = scale * height;
-      } else {
-        orientation = "v";
-        const maxHeight = 900;
-        const scale = maxHeight / height;
+          canvas.width = maxWidth;
+          canvas.height = scale * height;
+        } else {
+          orientation = "v";
+          const maxHeight = 900;
+          const scale = maxHeight / height;
 
-        canvas.width = scale * width;
-        canvas.height = maxHeight;
-      }
+          canvas.width = scale * width;
+          canvas.height = maxHeight;
+        }
 
-      // Put image to canvas and convert to BLOB
-      const canvasContext = canvas.getContext("2d");
-      canvasContext.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const resizeImage = canvasContext.canvas.toDataURL(img, "image/jpg");
-      const imageBlob = dataURLtoBlob(resizeImage);
+        // Put image to canvas and convert to BLOB
+        const canvasContext = canvas.getContext("2d");
+        canvasContext.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const resizeImage = canvasContext.canvas.toDataURL(img, "image/jpg");
+        const imageBlob = dataURLtoBlob(resizeImage);
 
-      formData.append("image", imageBlob); // (@RequestParam, File)
+        formData.append("image", imageBlob); // (@RequestParam, File)
 
-      axios
-        .post(
-          `http://localhost:8080/api/v1/upload/image/${orientation}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(() => {
-          console.log("file upload successfully");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-  }, []);
+        axios
+          .post(
+            `http://localhost:8080/api/v1/upload/image/${orientation}/${server}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(() => {
+            console.log("file upload successfully");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
+    },
+    [server]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

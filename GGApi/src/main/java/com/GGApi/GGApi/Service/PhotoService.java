@@ -25,19 +25,37 @@ public class PhotoService {
         this.fileStoreToFirestore = fileStoreToFirestore;
     }
 
-    public void saveToPeople(MultipartFile file, String orientation) throws ExecutionException, InterruptedException {
+    public void saveToServer(MultipartFile file, String orientation, String server) throws ExecutionException, InterruptedException {
         UUID uniqueName = UUID.randomUUID();
         String name = uniqueName.toString() + ".jpg";
         String URL;
+        String bucket;
+
+        switch (server){
+            case "People":
+                bucket = S3Buckets.PEOPLE.getBucketName();
+                break;
+            case "Nature":
+                bucket = S3Buckets.NATURE.getBucketName();
+                break;
+            case "Events":
+                bucket = S3Buckets.EVENTS.getBucketName();
+                break;
+            case "World":
+                bucket = S3Buckets.WORLD.getBucketName();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + server);
+        }
 
         Map<String, String> metaData = new HashMap<>();
         metaData.put("Content-Type", "image/jpg");
         try {
-            URL = fileStoreToAWS.saveFile(name, S3Buckets.PEOPLE.getBucketName(), file.getInputStream(), metaData);
+            URL = fileStoreToAWS.saveFile(name, bucket, file.getInputStream(), metaData);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
 
-        fileStoreToFirestore.saveFile(orientation, URL);
+        fileStoreToFirestore.saveFile(orientation, URL, bucket);
     }
 }
