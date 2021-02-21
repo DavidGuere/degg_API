@@ -22,7 +22,7 @@ public class FileStoreToAWS {
         this.s3Client = s3Client;
     }
 
-    public void saveFile(String fileName, String bucketName, InputStream file, Map<String, String> metaData){
+    public String saveFile(String fileName, String bucketName, InputStream file, Map<String, String> metaData){
 
         // AWS metadata
         ObjectMetadata fileMetaData = new ObjectMetadata();
@@ -32,6 +32,12 @@ public class FileStoreToAWS {
         } catch (AmazonServiceException e){
             System.out.println(e.getErrorMessage());
         }
+        // Create URL
+        String serverZone = ServerInformation.ZONE.getServerInformation();
+        String server = ServerInformation.SERVER.getServerInformation();
+        String imageUrl = "https://" + bucketName + ".s3." + serverZone + "." + server + "/" + fileName;
+
+        return imageUrl;
 
     }
 }

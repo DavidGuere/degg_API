@@ -22,4 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+GGApi/src/main/java/com/GGApi/GGApi/Config/AmazonClientConfig.java
 AmazonClientConfig.java
+Config/

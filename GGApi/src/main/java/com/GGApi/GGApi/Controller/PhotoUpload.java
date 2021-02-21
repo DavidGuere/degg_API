@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
 @RequestMapping("/api/v1/upload")
 @RestController
@@ -21,8 +22,14 @@ public class PhotoUpload {
         this.photoService = photoService;
     }
 
-    @PostMapping(path = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadImage(@RequestParam("image") MultipartFile image){
-        photoService.saveToPeople(image);
+    @PostMapping(path = "/image/{orientation}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void uploadImage(@RequestParam("image") MultipartFile image, @PathVariable("orientation") String orientation ) throws ExecutionException, InterruptedException {
+
+        photoService.saveToPeople(image, orientation);
     }
+
+//    @GetMapping
+//    public void asd() throws ExecutionException, InterruptedException {
+//        photoService.getSomething();
+//    }
 }

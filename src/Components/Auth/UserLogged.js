@@ -28,6 +28,9 @@ export default function UserLogged() {
         Log out
       </Button>
       <Dropzone />
+      <div>
+        <img id="output" alt="" />
+      </div>
     </>
   );
 }
