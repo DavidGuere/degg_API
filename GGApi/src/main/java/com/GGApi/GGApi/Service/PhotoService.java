@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -57,5 +58,29 @@ public class PhotoService {
         }
 
         fileStoreToFirestore.saveFile(orientation, URL, bucket);
+    }
+
+    public List<String> getFromServer(String server) throws ExecutionException, InterruptedException {
+        String bucket;
+
+        switch (server){
+            case "People":
+                bucket = S3Buckets.PEOPLE.getBucketName();
+                break;
+            case "Nature":
+                bucket = S3Buckets.NATURE.getBucketName();
+                break;
+            case "Events":
+                bucket = S3Buckets.EVENTS.getBucketName();
+                break;
+            case "World":
+                bucket = S3Buckets.WORLD.getBucketName();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + server);
+
+        }
+
+         return fileStoreToFirestore.getData(bucket);
     }
 }

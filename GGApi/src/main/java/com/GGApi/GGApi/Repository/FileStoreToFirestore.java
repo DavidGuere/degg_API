@@ -4,8 +4,15 @@ import com.GGApi.GGApi.Model.Foto;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import netscape.javascript.JSObject;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -31,9 +38,23 @@ public class FileStoreToFirestore {
         imageData.setId(lastId + 1);
 
         String docName = String.valueOf(imageData.getId());
-//
+
         ApiFuture<WriteResult> saveImageData = myDatabase.collection(collection).document(docName).set(imageData);
     }
 
+    public List<String> getData(String collection) throws ExecutionException, InterruptedException {
+        Firestore myDatabase = FirestoreClient.getFirestore();
+        ApiFuture<QuerySnapshot> future = myDatabase.collection(collection).get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        Gson json = new Gson();
+        List<String> data = new ArrayList<>();
+        for (QueryDocumentSnapshot document: documents) {
+            String response = json.toJson(document.toObject(Foto.class));
+            data.add(response);
+            System.out.println(response);
+        }
 
+
+        return data;
+    }
 }
